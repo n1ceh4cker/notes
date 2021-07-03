@@ -120,7 +120,7 @@ function Layout({ children }) {
                     <Typography>
                         Nice Akhtar
                     </Typography>
-                    <Avatar src='/notes-app/panda.png' className={styles.avatar}></Avatar>
+                    <Avatar src='/panda.png' className={styles.avatar}></Avatar>
                     <NoteContext.Consumer>{(context) => {
                        const { syncNote } = context
                        return(

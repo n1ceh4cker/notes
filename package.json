@@ -1,6 +1,5 @@
 {
   "name": "notes-app",
-  "homepage": "https://n1ceh4cker.github.io/notes-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
