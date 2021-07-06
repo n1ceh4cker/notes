@@ -94,11 +94,6 @@ function Layout({ children }) {
         </div>)
     return (
     <React.Fragment>
-        <NoteContext.Consumer>{(context) => {
-            const { syncNote } = context
-                syncNote()
-            }}
-        </NoteContext.Consumer>
         <Particles params={particleConfig} />
         <div className={styles.root}>
             <AppBar
