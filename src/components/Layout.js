@@ -1,15 +1,19 @@
-import { AppBar, Avatar, Drawer, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Toolbar, Typography } from '@material-ui/core'
-import { AddCircleOutlineOutlined, MenuOutlined, SubjectOutlined, Sync } from '@material-ui/icons'
-import React, { useState } from 'react'
+import { AppBar, Avatar, Button, Divider, Drawer, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core'
+import { AddCircleOutlineOutlined, MenuOutlined, SubjectOutlined, ExitToApp } from '@material-ui/icons'
+import React, { useContext, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
-import { NoteContext } from '../context/NoteContext'
 import Particles from 'react-particles-js'
 import { particleConfig } from '../config/particles'
+import { AuthContext } from '../context/AuthContext'
+import { auth, provider } from '../config/firebase'
+import Loading from './Loading'
+import NoteContextProvider from '../context/NoteContext'
 
 const drawerWidth = 240
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex'
+        display: 'flex',
+        minHeight: '100vh'
     },
     content: {
         backgroundColor: '#f9f9f9',
@@ -54,6 +58,9 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(2)
         }
+    },
+    userinfo: {
+        fontStyle: 'italic'  
     }
 }))
 function Layout({ children }) {
@@ -61,6 +68,9 @@ function Layout({ children }) {
     const history = useHistory()
     const location = useLocation()
     const [drawerOpen, setDrawerOpen] = useState(false)
+    const [anchorEl, setAnchorEl] = useState(null)
+    const open = Boolean(anchorEl)
+    const { user, loading } = useContext(AuthContext)
     const items = [
         {
             text: 'My Notes',
@@ -92,8 +102,19 @@ function Layout({ children }) {
                 ))}
             </List>
         </div>)
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget)
+    }
+    const handleClose = () => {
+        setAnchorEl(null)
+    }
+    if (loading) return <Loading />
+    else if (!user) {
+        auth.signInWithRedirect(provider)
+        return <Loading />
+    }else
     return (
-    <React.Fragment>
+    <NoteContextProvider>
         <Particles params={particleConfig} />
         <div className={styles.root}>
             <AppBar
@@ -112,19 +133,28 @@ function Layout({ children }) {
                     <Typography className={styles.brand}>
                         {new Date().toDateString()}
                     </Typography>
-                    <Typography>
-                        Nice Akhtar
-                    </Typography>
-                    <Avatar src='/panda.png' className={styles.avatar}></Avatar>
-                    <NoteContext.Consumer>{(context) => {
-                       const { syncNote } = context
-                       return(
-                            <IconButton onClick={syncNote}>
-                                <Sync />
-                            </IconButton>
-                        )
-                    }}
-                    </NoteContext.Consumer>
+                    <Button
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        onClick={handleMenu}
+                    >
+                         <Avatar src={user.photoURL} alt={user.displayName} className={styles.avatar}></Avatar>   
+                    </Button>
+                    <Menu
+                        id="menu-appbar"
+                        getContentAnchorEl={null}
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        keepMounted
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                    >
+                        <MenuItem><Typography className={styles.userinfo}>{user.displayName}</Typography></MenuItem>
+                        <MenuItem><Typography className={styles.userinfo}>{user.email}</Typography></MenuItem>
+                        <Divider />
+                        <MenuItem onClick={() => auth.signOut()}><ExitToApp />&nbsp;Logout</MenuItem>
+                    </Menu>      
                 </Toolbar>
             </AppBar>
             <nav className={styles.drawer}>
@@ -151,10 +181,10 @@ function Layout({ children }) {
             </nav>
             <div className={styles.content}>
                 <div className={styles.toolbar} />
-            {children} 
+                {children} 
             </div>
         </div>
-    </React.Fragment>
+    </NoteContextProvider>
     )
 }
 

@@ -1,6 +1,7 @@
 import { Button, Container, FormControl, FormControlLabel, FormLabel, makeStyles, Radio, RadioGroup, TextField, Typography } from '@material-ui/core'
 import { KeyboardArrowRight } from '@material-ui/icons'
 import React, { useState } from 'react'
+import { useHistory } from 'react-router'
 import { NoteContext } from '../context/NoteContext'
 
 const useStyles = makeStyles({
@@ -15,6 +16,7 @@ function Create() {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const styles = useStyles()
+    const history = useHistory()
     return (
         <Container>
             <Typography 
@@ -32,6 +34,7 @@ function Create() {
                     setTitle('')
                     setContent('')
                     setCategory('work')
+                    history.push('/')
                 }
                 return(
                 <form onSubmit={handleSubmit}>

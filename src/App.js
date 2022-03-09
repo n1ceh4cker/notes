@@ -2,7 +2,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { purple } from '@material-ui/core/colors';
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import Layout from './components/Layout';
-import NoteContextProvider from './context/NoteContext';
+import AuthContextProvider from './context/AuthContext';
 import Create from './routes/Create';
 import Notes from './routes/Notes';
 
@@ -25,14 +25,14 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <HashRouter>
-        <NoteContextProvider>
+        <AuthContextProvider>
           <Layout>
             <Switch>
               <Route exact  path='/' component={Notes} />
               <Route path='/new' component={Create} />
             </Switch>
           </Layout>
-        </NoteContextProvider>
+        </AuthContextProvider>
       </HashRouter>
     </ThemeProvider>
   );

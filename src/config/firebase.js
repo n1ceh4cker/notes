@@ -14,6 +14,15 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 const firestore = firebase.firestore()
 firestore.settings({ timestampsInSnapshots: true })
-const auth = firebase.auth()
+firestore.enablePersistence()
+    .catch(err => {
+        if (err.code === 'failed-precondition')
+            console.log('persistance failed')
+        else if (err.code === 'unimplemented')
+            console.log('persistance is not available')
+    })
 
-export { firestore, auth }
+const auth = firebase.auth()
+const provider = new firebase.auth.GoogleAuthProvider()
+
+export { firestore, auth, provider }

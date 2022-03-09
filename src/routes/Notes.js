@@ -24,7 +24,7 @@ function Notes() {
                         columnClassName="my-masonry-grid_column"
                     >  
                         {notes && notes.map( note => (
-                            note.delete?null:<NoteCard key={note.id} note={note} deleteNote={deleteNote}/>
+                            note.delete?null:<NoteCard key={note._id} note={note} deleteNote={deleteNote}/>
                         ))}
                     </Masonry>)
             }}
